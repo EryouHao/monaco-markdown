@@ -62,7 +62,7 @@ export const language = <languages.IMonarchLanguage>{
 		root: [
 
 			// headers (with #)
-			[/^(\s{0,3})(#+)((?:[^\\#]|@escapes)+)((?:#+)?)/, ['white', 'keyword', 'keyword', 'keyword']],
+			[/^(\s{0,3})(#+)((?:[^\\#]|@escapes)+)((?:#+)?)/, ['white', 'punctuation.definition.heading.begin.markdown', 'markup.heading', 'punctuation.definition.heading.end.markdown']],
 
 			// headers (with =)
 			[/^\s*(=+|\-+)\s*$/, 'keyword'],
@@ -74,19 +74,22 @@ export const language = <languages.IMonarchLanguage>{
 			[/^\s*>+/, 'comment'],
 
 			// list (starting with * or number)
-			[/^\s*([\*\-+:]|\d+\.)\s/, 'keyword'],
+			[/^\s*([\*\-+:]|\d+\.)\s/, 'markup.list'],
 
 			// code block (4 spaces indent)
 			[/^(\t|[ ]{4})[^ ].*$/, 'string'],
 
 			// code block (3 tilde)
-			[/^\s*~~~\s*((?:\w|[\/\-#])+)?\s*$/, { token: 'string', next: '@codeblock' }],
+			[/^\s*~~~\s*((?:\w|[\/\-#])+)?\s*$/, {
+				token: 'variable.source',
+				next: '@codeblock'
+			}],
 
 			// github style code blocks (with backticks and language)
-			[/^\s*```\s*((?:\w|[\/\-#])+).*$/, { token: 'string', next: '@codeblockgh', nextEmbedded: '$1' }],
+			[/^\s*```\s*((?:\w|[\/\-#])+).*$/, { token: 'variable.source', next: '@codeblockgh', nextEmbedded: '$1' }],
 
 			// github style code blocks (with backticks but no language)
-			[/^\s*```\s*$/, { token: 'string', next: '@codeblock' }],
+			[/^\s*```\s*$/, { token: 'variable.source', next: '@codeblock' }],
 
 			//math
 			[/(^\${2})/, {token: 'comment.math', next: 'math', bracket: '@open'}],
@@ -116,16 +119,16 @@ export const language = <languages.IMonarchLanguage>{
 			[/@escapes/, 'escape'],
 
 			// various markup
-			[/\b__([^\\_]|@escapes|_(?!_))+__\b/, 'strong'],
-			[/\*\*([^\\*]|@escapes|\*(?!\*))+\*\*/, 'strong'],
-			[/\b_[^_]+_\b/, 'emphasis'],
-			[/\*([^\\*]|@escapes)+\*/, 'emphasis'],
-			[/`([^\\`]|@escapes)+`/, 'variable'],
+			[/\b(__)((?:[^\\_]|@escapes|_(?!_))+)(__)\b/, ['punctuation.definition.bold.begin.markdown', 'markup.bold', 'punctuation.definition.bold.end.markdown']],
+			[/(\*\*)((?:[^\\*]|@escapes|\*(?!\*))+)(\*\*)/, ['punctuation.definition.bold.begin.markdown', 'markup.bold', 'punctuation.definition.bold.end.markdown']],
+			[/\b(_)(?:[^_]+)(_)\b/, ['punctuation.definition.italic.begin.markdown', 'markup.italic', 'punctuation.definition.italic.end.markdown']],
+			[/(\*)((?:[^\\*]|@escapes)+)(\*)/, ['punctuation.definition.italic.begin.markdown', 'markup.italic', 'punctuation.definition.italic.end.markdown']],
+			[/(`)((?:[^\\`]|@escapes)+)(`)/, ['punctuation.definition.variable.begin.markdown', 'variable', 'punctuation.definition.variable.end.markdown']],
 
 			// links
 			[/\{+[^}]+\}+/, 'string.target'],
-			[/(!?\[)((?:[^\]\\]|@escapes)*)(\]\([^\)]+\))/, ['string.link', '', 'string.link']],
-			[/(!?\[)((?:[^\]\\]|@escapes)*)(\])/, 'string.link'],
+			[/(!?\[)((?:[^\]\\]|@escapes)*)(\]\([^\)]+\))/, ['punctuation.definition.link.begin.markdown', 'markup.underline.link' ,'punctuation.definition.link.end.markdown']],
+			[/(!?\[)((?:[^\]\\]|@escapes)*)(\])/, ['punctuation.definition.link.begin.markdown', 'markup.underline.link' ,'punctuation.definition.link.end.markdown']],
 
 			//inline math
 			[/(\$\$)([^$]*)(\$\$)/, [{token: 'comment.math', bracket: '@open'},
